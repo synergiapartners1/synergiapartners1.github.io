@@ -7,26 +7,27 @@
 <title>Synergia Assessments · Admin</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Libre+Caslon+Text:wght@700&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Manrope:wght@700;800&display=swap">
 <style>
   :root {
-    --bg: #11151c;
-    --top: #0b0f15;
-    --card: #191e27;
-    --card-2: #1f2530;
-    --line: #2a313d;
-    --text: #eef1f6;
-    --muted: #9aa3b2;
-    --faint: #6b7483;
-    --accent: #2bb39b;
-    --accent-ink: #06231e;
-    --accent-soft: rgba(43, 179, 155, .14);
-    --hot-bg: rgba(229, 83, 75, .18);   --hot: #ff8b80;
+    --bg: #0a1426;
+    --top: #061021;
+    --card: #101d34;
+    --card-2: #16253f;
+    --line: #22345a;
+    --text: #eef2f8;
+    --muted: #9eadc6;
+    --faint: #6d7d99;
+    --accent: #e8961e;
+    --accent-hi: #f5b048;
+    --accent-ink: #241400;
+    --accent-soft: rgba(232, 150, 30, .15);
+    --hot-bg: rgba(239, 68, 68, .18);   --hot: #ff8b80;
     --warm-bg: rgba(234, 179, 8, .18);  --warm: #f5c84c;
     --nurture-bg: rgba(96, 165, 250, .16); --nurture: #8ab8ff;
     --test-bg: rgba(148, 163, 184, .16); --test: #b4bdcb;
     --radius: 12px;
-    --serif: "Libre Caslon Text", Georgia, "Times New Roman", serif;
+    --display: Manrope, Inter, system-ui, sans-serif;
   }
   * { box-sizing: border-box; }
   html, body { margin: 0; }
@@ -40,7 +41,7 @@
 
   /* ---------- top bar ---------- */
   header.top {
-    background: var(--top); border-bottom: 1px solid #1c222c;
+    background: var(--top); border-bottom: 1px solid #16243f;
     position: sticky; top: 0; z-index: 5;
   }
   .top-inner {
@@ -48,7 +49,8 @@
     display: flex; align-items: center; gap: 16px; flex-wrap: wrap;
   }
   .brand { display: flex; align-items: baseline; gap: 12px; margin-right: auto; }
-  .logo { font-family: var(--serif); font-weight: 700; font-size: 20px; letter-spacing: .02em; color: #fff; }
+  .logo { font-family: var(--display); font-weight: 800; font-size: 20px; letter-spacing: .01em; color: #fff; display: inline-flex; align-items: center; gap: 9px; }
+  .mark { width: 26px; height: 22px; flex: none; }
   .tagline { font-size: 12px; letter-spacing: .14em; text-transform: uppercase; color: var(--muted); font-weight: 600; }
   .updated { font-size: 12px; color: var(--muted); line-height: 1.25; text-align: right; }
   .updated b { display: block; color: var(--text); font-weight: 500; }
@@ -56,7 +58,7 @@
     background: var(--card-2); border: 1px solid var(--line); border-radius: 8px;
     padding: 8px 14px; cursor: pointer; font-weight: 500; white-space: nowrap;
   }
-  .btn:hover { border-color: #3a4352; }
+  .btn:hover { border-color: #33497a; }
   .btn:disabled { opacity: .55; cursor: default; }
   .btn.primary { background: var(--accent); border-color: var(--accent); color: var(--accent-ink); font-weight: 600; }
 
@@ -80,7 +82,7 @@
 
   /* ---------- cards ---------- */
   .card { background: var(--card); border: 1px solid var(--line); border-radius: var(--radius); padding: 18px 20px; }
-  .card h2 { font-family: var(--serif); font-size: 18px; font-weight: 700; margin: 0; letter-spacing: .005em; }
+  .card h2 { font-family: var(--display); font-size: 17px; font-weight: 800; margin: 0; letter-spacing: -.005em; }
   .card .sub { color: var(--muted); font-size: 12.5px; margin: 4px 0 14px; }
   .kpis { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; margin-bottom: 14px; }
   .kpi .label { font-weight: 600; font-size: 13px; }
@@ -128,10 +130,10 @@
   td { padding: 14px; border-bottom: 1px solid var(--line); vertical-align: middle; }
   tr.lead { cursor: pointer; }
   tr.lead:hover td { background: rgba(255, 255, 255, .02); }
-  tr.lead.open td { background: rgba(43, 179, 155, .05); }
+  tr.lead.open td { background: rgba(232, 150, 30, .06); }
   .who b { font-weight: 600; }
   .who .meta { color: var(--muted); font-size: 12.5px; margin-top: 2px; }
-  .chip { display: inline-block; margin-left: 6px; padding: 1px 7px; border-radius: 5px; font-size: 11.5px; font-weight: 500; background: var(--accent-soft); color: #7fd9c8; vertical-align: 1px; }
+  .chip { display: inline-block; margin-left: 6px; padding: 1px 7px; border-radius: 5px; font-size: 11.5px; font-weight: 500; background: var(--accent-soft); color: var(--accent-hi); vertical-align: 1px; }
   .score { font-weight: 600; font-variant-numeric: tabular-nums; }
   .badge { display: inline-flex; align-items: center; gap: 6px; padding: 3px 10px; border-radius: 999px; font-size: 12px; font-weight: 600; white-space: nowrap; }
   .badge::before { content: ""; width: 6px; height: 6px; border-radius: 50%; background: currentColor; }
@@ -145,11 +147,11 @@
   td select { min-width: 140px; }
   td.saving select, td.saving input { opacity: .6; }
   .weak { max-width: 220px; }
-  tr.detail td { background: #151a22; padding: 0; cursor: default; }
+  tr.detail td { background: #0d1830; padding: 0; cursor: default; }
   .detail-inner { padding: 16px 20px 20px; display: grid; grid-template-columns: minmax(150px, 230px) 1fr; gap: 0 18px; }
-  .detail-inner div { padding: 7px 0; border-bottom: 1px solid #222935; overflow-wrap: anywhere; white-space: pre-wrap; }
+  .detail-inner div { padding: 7px 0; border-bottom: 1px solid #1d2d4d; overflow-wrap: anywhere; white-space: pre-wrap; }
   .detail-inner .k { color: var(--muted); font-size: 12.5px; }
-  .detail-inner a { color: #7fd9c8; }
+  .detail-inner a { color: var(--accent-hi); }
   .no-rows { padding: 30px 20px; color: var(--faint); text-align: center; }
 
   footer.note { color: var(--faint); font-size: 12.5px; margin-top: 22px; }
@@ -157,7 +159,7 @@
   /* toast */
   #toast {
     position: fixed; left: 50%; bottom: 24px; transform: translateX(-50%);
-    background: #222936; border: 1px solid var(--line); border-radius: 10px; padding: 10px 16px; font-size: 13.5px;
+    background: #1a2a47; border: 1px solid var(--line); border-radius: 10px; padding: 10px 16px; font-size: 13.5px;
     box-shadow: 0 8px 30px rgba(0, 0, 0, .35); z-index: 20;
   }
   #toast.err { border-color: #7a2f2a; color: var(--hot); }
@@ -195,7 +197,7 @@
 
 <div class="login" id="login">
   <form id="loginForm" autocomplete="on">
-    <div class="logo">SYNERGIA</div>
+    <div class="logo"><svg class="mark" viewBox="0 0 26 22" aria-hidden="true"><rect x="0" y="12" width="4" height="10" rx="1" fill="#1f5fa8"/><rect x="5.5" y="9" width="4" height="13" rx="1" fill="#0a8ca8"/><rect x="11" y="6" width="4" height="16" rx="1" fill="#4f9a3a"/><rect x="16.5" y="3" width="4" height="19" rx="1" fill="#e8961e"/><rect x="22" y="0" width="4" height="22" rx="1" fill="#7c8696"/></svg>SYNERGIA</div>
     <span class="tagline">Assessments · Admin</span>
     <p>Private. Enter the admin password to load submissions.</p>
     <input id="pw" type="password" name="password" placeholder="Password" autocomplete="current-password" required>
@@ -207,7 +209,7 @@
 <div id="app" hidden>
   <header class="top">
     <div class="top-inner">
-      <div class="brand"><span class="logo">SYNERGIA</span><span class="tagline">Assessments · Admin</span></div>
+      <div class="brand"><span class="logo"><svg class="mark" viewBox="0 0 26 22" aria-hidden="true"><rect x="0" y="12" width="4" height="10" rx="1" fill="#1f5fa8"/><rect x="5.5" y="9" width="4" height="13" rx="1" fill="#0a8ca8"/><rect x="11" y="6" width="4" height="16" rx="1" fill="#4f9a3a"/><rect x="16.5" y="3" width="4" height="19" rx="1" fill="#e8961e"/><rect x="22" y="0" width="4" height="22" rx="1" fill="#7c8696"/></svg>SYNERGIA</span><span class="tagline">Assessments · Admin</span></div>
       <div class="updated">Updated<b id="updated">—</b></div>
       <button class="btn" id="refresh" type="button">Refresh</button>
       <button class="btn" id="exportCsv" type="button">Export CSV</button>
@@ -548,7 +550,7 @@ function renderWeeks(list) {
   const top = Math.ceil(maxC / step) * step + (maxC % step === 0 ? step : 0);
   const y = (v) => T + (H - T - B) * (1 - v / top);
   for (let v = 0; v <= top; v += step) {
-    chart.appendChild(svg('line', { x1: L, x2: W - R, y1: y(v), y2: y(v), stroke: v === 0 ? '#3a4352' : '#262d38', 'stroke-width': 1, 'vector-effect': 'non-scaling-stroke' }));
+    chart.appendChild(svg('line', { x1: L, x2: W - R, y1: y(v), y2: y(v), stroke: v === 0 ? '#33497a' : '#1f3052', 'stroke-width': 1, 'vector-effect': 'non-scaling-stroke' }));
     const t = svg('text', { x: L - 8, y: y(v) + 3, 'text-anchor': 'end' }); t.textContent = v; chart.appendChild(t);
   }
   const slot = (W - L - R) / weeks;
@@ -557,7 +559,7 @@ function renderWeeks(list) {
   counts.forEach((c, i) => {
     const x = L + slot * i + (slot - bw) / 2;
     if (c) {
-      const bar = svg('rect', { x, y: y(c), width: bw, height: y(0) - y(c), rx: 2, fill: '#2bb39b' });
+      const bar = svg('rect', { x, y: y(c), width: bw, height: y(0) - y(c), rx: 2, fill: '#e8961e' });
       const tip = svg('title', {}); tip.textContent = 'Week of ' + fmtDay(starts[i]) + ': ' + c;
       bar.appendChild(tip); chart.appendChild(bar);
     }
