@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Synergia · Assessment Dashboard</title>
+<style>
+  :root {
+    --ink: #14213d;
+    --ink-soft: #4a5672;
+    --muted: #8590a6;
+    --line: #e3e6ee;
+    --bg: #f6f7fa;
+    --card: #ffffff;
+    --accent: #b8893b;
+    --accent-soft: #f6efe2;
+    --danger: #b3261e;
+    --radius: 12px;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    background: var(--bg);
+    color: var(--ink);
+    font-size: 15px;
+    line-height: 1.45;
+  }
+  .wrap { max-width: 1080px; margin: 0 auto; padding: 24px 16px 64px; }
+  header { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; margin-bottom: 20px; }
+  .brand { font-size: 13px; letter-spacing: .12em; text-transform: uppercase; color: var(--accent); font-weight: 600; }
+  h1 { font-size: 22px; margin: 2px 0 0; font-weight: 650; }
+  .updated { color: var(--muted); font-size: 13px; }
+  button {
+    font: inherit; border-radius: 8px; border: 1px solid var(--line); background: var(--card);
+    color: var(--ink); padding: 8px 14px; cursor: pointer;
+  }
+  button.primary { background: var(--ink); border-color: var(--ink); color: #fff; font-weight: 600; }
+  button:disabled { opacity: .6; cursor: default; }
+  .actions { display: flex; gap: 8px; }
+
+  /* Sign-in */
+  #login { max-width: 380px; margin: 12vh auto 0; background: var(--card); border: 1px solid var(--line); border-radius: var(--radius); padding: 28px; }
+  #login h1 { margin-bottom: 6px; }
+  #login p { color: var(--ink-soft); margin: 0 0 18px; font-size: 14px; }
+  #login input { width: 100%; font: inherit; padding: 10px 12px; border: 1px solid var(--line); border-radius: 8px; margin-bottom: 12px; }
+  #login button { width: 100%; padding: 11px; }
+  .error { color: var(--danger); font-size: 14px; margin-top: 12px; min-height: 1em; }
+
+  /* Summary tiles */
+  .tiles { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 18px; }
+  .tile { background: var(--card); border: 1px solid var(--line); border-radius: var(--radius); padding: 14px 16px; }
+  .tile .label { color: var(--muted); font-size: 12px; text-transform: uppercase; letter-spacing: .06em; }
+  .tile .value { font-size: 26px; font-weight: 650; margin-top: 2px; font-variant-numeric: tabular-nums; }
+  @media (max-width: 640px) { .tiles { grid-template-columns: repeat(2, 1fr); } }
+
+  /* Filters */
+  .filters { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 14px; }
+  .filters input, .filters select {
+    font: inherit; padding: 9px 12px; border: 1px solid var(--line); border-radius: 8px; background: var(--card); color: var(--ink);
+  }
+  .filters input { flex: 1 1 240px; }
+  .filters select { flex: 1 1 150px; }
+  @media (min-width: 641px) { .filters select { flex: 0 1 auto; } }
+  .count { color: var(--muted); font-size: 13px; margin-bottom: 8px; }
+
+  /* Submission list */
+  .list { display: flex; flex-direction: column; gap: 8px; }
+  details.sub { background: var(--card); border: 1px solid var(--line); border-radius: var(--radius); }
+  details.sub[open] { border-color: #cfd4e0; }
+  summary { list-style: none; cursor: pointer; padding: 14px 16px; display: grid; grid-template-columns: 1fr auto; gap: 4px 16px; align-items: center; }
+  summary::-webkit-details-marker { display: none; }
+  .who { font-weight: 600; }
+  .who .person { font-weight: 400; color: var(--ink-soft); }
+  .meta { color: var(--muted); font-size: 13px; grid-column: 1; }
+  .right { grid-row: 1 / span 2; grid-column: 2; text-align: right; }
+  .score { font-size: 20px; font-weight: 650; font-variant-numeric: tabular-nums; }
+  .badge { display: inline-block; background: var(--accent-soft); color: #7a5a22; border-radius: 999px; padding: 2px 10px; font-size: 12px; font-weight: 600; }
+  .fields { border-top: 1px solid var(--line); padding: 8px 16px 16px; display: grid; grid-template-columns: minmax(140px, 240px) 1fr; gap: 0 16px; }
+  .fields div { padding: 7px 0; border-bottom: 1px solid #f0f2f6; overflow-wrap: anywhere; white-space: pre-wrap; }
+  .fields .k { color: var(--ink-soft); font-size: 13px; }
+  @media (max-width: 640px) {
+    .fields { grid-template-columns: 1fr; }
+    .fields .k { border-bottom: none; padding-bottom: 0; }
+  }
+  a { color: var(--ink); }
+  .empty { text-align: center; color: var(--muted); padding: 40px 0; }
+  .note { background: var(--accent-soft); border-radius: 8px; padding: 10px 14px; font-size: 14px; margin-bottom: 14px; }
+  [hidden] { display: none !important; }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <form id="login" autocomplete="on">
+    <div class="brand">Synergia Partners</div>
+    <h1>Assessment Dashboard</h1>
+    <p>Private. Enter the dashboard password to see submissions.</p>
+    <input id="pw" type="password" name="password" placeholder="Password" autocomplete="current-password" required>
+    <button class="primary" id="signin" type="submit">Sign in</button>
+    <div class="error" id="loginError"></div>
+  </form>
+
+  <main id="app" hidden>
+    <header>
+      <div>
+        <div class="brand">Synergia Partners</div>
+        <h1>Assessment submissions</h1>
+        <div class="updated" id="updated"></div>
+      </div>
+      <div class="actions">
+        <button id="refresh" type="button">Refresh</button>
+        <button id="signout" type="button">Sign out</button>
+      </div>
+    </header>
+
+    <div id="notes"></div>
+
+    <section class="tiles">
+      <div class="tile"><div class="label">All submissions</div><div class="value" id="tTotal">0</div></div>
+      <div class="tile"><div class="label">Last 30 days</div><div class="value" id="t30">0</div></div>
+      <div class="tile"><div class="label">GRI</div><div class="value" id="tGri">0</div></div>
+      <div class="tile"><div class="label">Pillar assessments</div><div class="value" id="tPillar">0</div></div>
+    </section>
+
+    <section class="filters">
+      <input id="q" type="search" placeholder="Search company, name, email…">
+      <select id="fAssess"><option value="">All assessments</option></select>
+      <select id="fRange">
+        <option value="">Any time</option>
+        <option value="7">Last 7 days</option>
+        <option value="30">Last 30 days</option>
+        <option value="90">Last 90 days</option>
+      </select>
+    </section>
+
+    <div class="count" id="count"></div>
+    <div class="list" id="list"></div>
+  </main>
+
+</div>
+
+<script>
+// Dashboard Backend web app URL (Apps Script project "Dashboard Backend", deployment "Dashboard").
+const BACKEND_URL = 'https://script.google.com/macros/s/AKfycbxewSo-4cjBVcHsjYrd3Xs6GZxInvg4-hn9XeUsFfXmsj9fKSEXf0S24hfVEXPGcYEO/exec';
+
+const GRI_TAB = 'GRI';
+const GRI_LABEL = 'Growth Readiness Index';
+
+const $ = (id) => document.getElementById(id);
+let password = '';
+let submissions = [];
+
+// ---------- storage (this browser tab only) ----------
+function saveSession(pw) { try { sessionStorage.setItem('synergiaDash', pw); } catch (e) {} }
+function loadSession() { try { return sessionStorage.getItem('synergiaDash') || ''; } catch (e) { return ''; } }
+function clearSession() { try { sessionStorage.removeItem('synergiaDash'); } catch (e) {} }
+
+// ---------- backend ----------
+async function fetchData(pw) {
+  if (BACKEND_URL.indexOf('PASTE') === 0) {
+    throw new Error('Add the Dashboard Backend web app URL to this page first.');
+  }
+  const res = await fetch(BACKEND_URL, {
+    method: 'POST',
+    headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+    body: JSON.stringify({ password: pw })
+  });
+  if (!res.ok) throw new Error('The backend did not respond (' + res.status + ').');
+  return res.json();
+}
+
+// ---------- column detection ----------
+function findCol(headers, patterns, exclude) {
+  for (const p of patterns) {
+    const i = headers.findIndex((h) => p.test(h) && !(exclude && exclude.test(h)));
+    if (i !== -1) return i;
+  }
+  return -1;
+}
+
+function mapTab(tab) {
+  const h = tab.headers;
+  const col = {
+    date: findCol(h, [/timestamp/i, /submitted/i, /date/i]),
+    company: findCol(h, [/^company/i, /company/i, /organi[sz]ation/i, /business/i]),
+    name: findCol(h, [/^full name$/i, /^name$/i, /contact name/i, /first name/i, /name/i], /company|organi[sz]ation|business|assessment/i),
+    email: findCol(h, [/e-?mail/i]),
+    assessment: findCol(h, [/^assessment$/i, /assessment name/i, /assessment/i, /pillar/i], /score|date|id$/i),
+    score: findCol(h, [/overall score/i, /total score/i, /overall/i, /score/i, /index/i], /date/i),
+    level: findCol(h, [/level/i, /tier/i, /band/i, /stage/i, /rating/i, /maturity/i], /score|date/i)
+  };
+  const get = (cells, i) => (i >= 0 ? String(cells[i] || '').trim() : '');
+
+  return tab.rows.map((r) => {
+    const c = r.cells;
+    let ts = r.ts;
+    if (ts == null && col.date >= 0) {
+      const parsed = Date.parse(get(c, col.date));
+      ts = isNaN(parsed) ? null : parsed;
+    }
+    const isGri = tab.name === GRI_TAB;
+    return {
+      tab: tab.name,
+      isGri: isGri,
+      order: r.order,
+      ts: ts,
+      dateText: get(c, col.date),
+      company: get(c, col.company),
+      name: get(c, col.name),
+      email: get(c, col.email),
+      assessment: isGri ? GRI_LABEL : (get(c, col.assessment) || tab.name),
+      score: get(c, col.score),
+      level: get(c, col.level),
+      fields: h.map((k, i) => [k || ('Column ' + (i + 1)), String(c[i] == null ? '' : c[i])])
+               .filter(([, v]) => v.trim() !== ''),
+      search: c.join(' ').toLowerCase()
+    };
+  });
+}
+
+// ---------- rendering ----------
+function el(tag, cls, text) {
+  const e = document.createElement(tag);
+  if (cls) e.className = cls;
+  if (text != null) e.textContent = text;
+  return e;
+}
+
+function fmtDate(s) {
+  if (s.ts == null) return s.dateText;
+  return new Date(s.ts).toLocaleString(undefined, { month: 'short', day: 'numeric', year: 'numeric', hour: 'numeric', minute: '2-digit' });
+}
+
+function renderAll(data) {
+  const notes = $('notes');
+  notes.replaceChildren();
+  data.tabs.filter((t) => t.missing).forEach((t) => {
+    notes.appendChild(el('div', 'note', 'The tracker has no tab named "' + t.name + '". If it was renamed, update TABS in Dashboard Backend.'));
+  });
+
+  submissions = data.tabs.flatMap(mapTab);
+  submissions.sort((a, b) => {
+    if (a.ts != null && b.ts != null) return b.ts - a.ts;
+    if (a.ts != null) return -1;
+    if (b.ts != null) return 1;
+    return b.order - a.order;
+  });
+
+  const now = Date.now();
+  const day = 86400000;
+  $('tTotal').textContent = submissions.length;
+  $('t30').textContent = submissions.filter((s) => s.ts != null && now - s.ts <= 30 * day).length;
+  $('tGri').textContent = submissions.filter((s) => s.isGri).length;
+  $('tPillar').textContent = submissions.filter((s) => !s.isGri).length;
+  $('updated').textContent = 'Updated ' + new Date(data.updated).toLocaleString();
+
+  const sel = $('fAssess');
+  const current = sel.value;
+  const names = [...new Set(submissions.map((s) => s.assessment))].sort();
+  sel.replaceChildren(el('option', null, 'All assessments'));
+  sel.firstChild.value = '';
+  names.forEach((n) => { const o = el('option', null, n); o.value = n; sel.appendChild(o); });
+  if (names.includes(current)) sel.value = current;
+
+  renderList();
+}
+
+function renderList() {
+  const q = $('q').value.trim().toLowerCase();
+  const a = $('fAssess').value;
+  const days = Number($('fRange').value || 0);
+  const now = Date.now();
+
+  const shown = submissions.filter((s) =>
+    (!q || s.search.includes(q)) &&
+    (!a || s.assessment === a) &&
+    (!days || (s.ts != null && now - s.ts <= days * 86400000))
+  );
+
+  $('count').textContent = shown.length + ' of ' + submissions.length + ' submissions';
+  const list = $('list');
+  list.replaceChildren();
+  if (!shown.length) { list.appendChild(el('div', 'empty', 'No submissions match.')); return; }
+
+  shown.forEach((s) => {
+    const d = el('details', 'sub');
+    const sum = el('summary');
+
+    const who = el('div', 'who', s.company || s.name || s.email || '(no company given)');
+    if (s.company && s.name) { who.appendChild(document.createTextNode(' ')); who.appendChild(el('span', 'person', '· ' + s.name)); }
+    sum.appendChild(who);
+
+    const right = el('div', 'right');
+    if (s.score) right.appendChild(el('div', 'score', s.score));
+    if (s.level) right.appendChild(el('span', 'badge', s.level));
+    sum.appendChild(right);
+
+    sum.appendChild(el('div', 'meta', [s.assessment, fmtDate(s)].filter(Boolean).join(' · ')));
+    d.appendChild(sum);
+
+    const f = el('div', 'fields');
+    s.fields.forEach(([k, v]) => {
+      f.appendChild(el('div', 'k', k));
+      const val = el('div', 'v');
+      if (/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v.trim())) {
+        const link = el('a', null, v.trim());
+        link.href = 'mailto:' + v.trim();
+        val.appendChild(link);
+      } else if (/^https?:\/\/\S+$/.test(v.trim())) {
+        const link = el('a', null, v.trim());
+        link.href = v.trim();
+        link.target = '_blank';
+        link.rel = 'noopener noreferrer';
+        val.appendChild(link);
+      } else {
+        val.textContent = v;
+      }
+      f.appendChild(val);
+    });
+    d.appendChild(f);
+    list.appendChild(d);
+  });
+}
+
+// ---------- flow ----------
+async function signIn(pw, quiet) {
+  const btn = $('signin');
+  btn.disabled = true; btn.textContent = 'Signing in…';
+  $('loginError').textContent = '';
+  try {
+    const data = await fetchData(pw);
+    if (!data.ok) throw new Error(data.error || 'Sign-in failed.');
+    password = pw;
+    saveSession(pw);
+    $('login').hidden = true;
+    $('app').hidden = false;
+    renderAll(data);
+  } catch (err) {
+    clearSession();
+    if (!quiet) $('loginError').textContent = err.message;
+  } finally {
+    btn.disabled = false; btn.textContent = 'Sign in';
+  }
+}
+
+$('login').addEventListener('submit', (e) => { e.preventDefault(); signIn($('pw').value, false); });
+
+$('refresh').addEventListener('click', async () => {
+  const b = $('refresh');
+  b.disabled = true; b.textContent = 'Refreshing…';
+  try {
+    const data = await fetchData(password);
+    if (!data.ok) throw new Error(data.error);
+    renderAll(data);
+  } catch (err) {
+    alertBox(err.message);
+  } finally {
+    b.disabled = false; b.textContent = 'Refresh';
+  }
+});
+
+$('signout').addEventListener('click', () => {
+  clearSession(); password = ''; submissions = [];
+  $('list').replaceChildren(); $('pw').value = '';
+  $('app').hidden = true; $('login').hidden = false;
+});
+
+['q', 'fAssess', 'fRange'].forEach((id) => $(id).addEventListener('input', renderList));
+
+function alertBox(msg) {
+  const n = el('div', 'note', msg);
+  $('notes').prepend(n);
+  setTimeout(() => n.remove(), 6000);
+}
+
+const saved = loadSession();
+if (saved) signIn(saved, true);
+</script>
+</body>
+</html>
